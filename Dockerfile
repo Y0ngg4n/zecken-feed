@@ -7,4 +7,4 @@ RUN	apt-get update \
 ADD	./requirements.txt	/app/requirements.txt
 RUN	python3 -m pip install --no-cache-dir --upgrade -r requirements.txt
 ADD	./*.py	/app
-CMD	["fastapi","run","main.py","--port","80"]
+CMD	["fastapi","run","main.py","--port","8000"]
