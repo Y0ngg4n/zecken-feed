@@ -1,0 +1,10 @@
+black
+fastapi
+fastapi-cli
+pytest
+feedgen
+signalbot
+requests
+setuptools
+build
+wheel
