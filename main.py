@@ -68,8 +68,9 @@ class Scraper(ABC):
 class Taz(Scraper):
 
     def __init__(self):
-        self.counter = 840
+        self.counter = 845
         self.updateUrl()
+        self.updateCounter()
 
     def updateCounter(self):
         with open("counter.txt", "r") as f:
