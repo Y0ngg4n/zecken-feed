@@ -113,10 +113,7 @@ class Taz(Scraper):
         if os.path.isfile("data-old.csv"):
             with open(file="data-old.csv", mode="r") as old:
                 old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
-
-        print(type(csv_response))
-        print(type(old_csv))
-        diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
+                diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
 
         for i in range(1, len(csv_response)):
             Collector.demos.append(
