@@ -73,13 +73,12 @@ class Taz(Scraper):
         self.updateCounter()
 
     def updateCounter(self):
-        with open("counter.txt", "r") as f:
-            try:
-                self.counter = int.parse(f.readline())
-            except:
-                pass
-
-        pass
+        if os.path.isfile("counter.txt"):
+            with open("counter.txt", "r") as f:
+                try:
+                    self.counter = int.parse(f.readline())
+                except:
+                    pass
 
     def updateUrl(self) -> str:
         self.url = f"https://datawrapper.dwcdn.net/p3Ttm/{self.counter}/dataset.csv"
