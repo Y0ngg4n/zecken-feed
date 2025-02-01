@@ -12,6 +12,7 @@ from fastapi import FastAPI, Response
 counter_file = "./data/counter.txt"
 data_file = "./data/data.csv"
 old_data_file = "./data/data-old.csv"
+data_dir = "./data"
 
 
 class Collector:
@@ -20,6 +21,9 @@ class Collector:
 
     def start(self):
         self.demo = []
+
+        if not os.path.isdir(data_dir):
+            os.makedirs(data_dir, exist_ok=True)
         taz = Taz()
         taz.get_data()
 
@@ -56,9 +60,8 @@ class Demo:
         self.link = link
 
     def getId(self):
-        return (
-            f"{self.place}#{self.startPoint}#{self.date.strftime("%d.%m.%Y")}".strip()
-        )
+        date = self.date.strftime("%d.%m.%Y")
+        return f"{self.place}#{self.startPoint}#{date}".strip()
 
     def __eq__(self, value: object, /) -> bool:
         return self.getId() == value
@@ -80,6 +83,7 @@ class Taz(Scraper):
         global counter_file
         global data_file
         global old_data_file
+
         if os.path.isfile(counter_file):
             with open(counter_file, "r") as f:
                 try:
@@ -109,8 +113,7 @@ class Taz(Scraper):
         csv_response = requests.get(self.url)
 
         if not os.path.isfile(data_file):
-            with open(data_file, "w") as f:
-                f.write("")
+            os.mknod(data_file)
         else:
             with open(data_file, mode="r") as fi:
                 with open(old_data_file, mode="w") as fw:

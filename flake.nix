@@ -16,7 +16,6 @@
       fastapi-cli
       pytest
       feedgen
-      signalbot
       requests
       setuptools
       build
