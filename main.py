@@ -9,6 +9,10 @@ import time
 from feedgen.feed import FeedGenerator
 from fastapi import FastAPI, Response
 
+counter_file = "./data/counter.txt"
+data_file = "./data/data.csv"
+old_data_file = "./data/data-old.csv"
+
 
 class Collector:
     demos = []
@@ -73,8 +77,11 @@ class Taz(Scraper):
         self.updateCounter()
 
     def updateCounter(self):
-        if os.path.isfile("counter.txt"):
-            with open("counter.txt", "r") as f:
+        global counter_file
+        global data_file
+        global old_data_file
+        if os.path.isfile(counter_file):
+            with open(counter_file, "r") as f:
                 try:
                     self.counter = int.parse(f.readline())
                 except:
@@ -84,6 +91,9 @@ class Taz(Scraper):
         self.url = f"https://datawrapper.dwcdn.net/p3Ttm/{self.counter}/dataset.csv"
 
     def get_data(self):
+        global counter_file
+        global data_file
+        global old_data_file
         csv_response = requests.get(self.url)
         while csv_response.status_code == 200:
             self.updateUrl()
@@ -94,24 +104,24 @@ class Taz(Scraper):
 
         self.counter -= 2
         self.updateUrl()
-        with open("counter.txt", "w") as f:
+        with open(counter_file, "w") as f:
             f.write(str(self.counter))
         csv_response = requests.get(self.url)
 
-        if not os.path.isfile("data.csv"):
-            with open("data.csv", "w") as f:
+        if not os.path.isfile(data_file):
+            with open(data_file, "w") as f:
                 f.write("")
         else:
-            with open("data.csv", mode="r") as fi:
-                with open("data-old.csv", mode="w") as fw:
+            with open(data_file, mode="r") as fi:
+                with open(old_data_file, mode="w") as fw:
                     fw.write(fi.read())
 
-        with open("data.csv", "w") as f:
+        with open(data_file, "w") as f:
             f.write(csv_response.text)
         csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))
 
-        if os.path.isfile("data-old.csv"):
-            with open(file="data-old.csv", mode="r") as old:
+        if os.path.isfile(old_data_file):
+            with open(file=old_data_file, mode="r") as old:
                 old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
                 diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
 
