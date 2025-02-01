@@ -98,6 +98,7 @@ class Taz(Scraper):
         global counter_file
         global data_file
         global old_data_file
+        self.updateCounter()
         csv_response = requests.get(self.url)
         while csv_response.status_code == 200:
             self.updateUrl()
