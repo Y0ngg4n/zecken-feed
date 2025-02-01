@@ -87,7 +87,7 @@ class Taz(Scraper):
         if os.path.isfile(counter_file):
             with open(counter_file, "r") as f:
                 try:
-                    self.counter = int(f.readline().trim())
+                    self.counter = int(f.readline().strim())
                     print("Updated Counter to " + self.counter)
                 except Exception as e:
                     print(e)
