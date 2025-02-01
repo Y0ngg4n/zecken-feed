@@ -88,7 +88,9 @@ class Taz(Scraper):
             with open(counter_file, "r") as f:
                 try:
                     self.counter = int.parse(f.readline())
-                except:
+                    print("Updated Counter to " + self.counter)
+                except Exception as e:
+                    print(e)
                     pass
 
     def updateUrl(self) -> str:
