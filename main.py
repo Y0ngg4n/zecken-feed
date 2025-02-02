@@ -191,10 +191,10 @@ class Taz(Scraper):
             message = ""
             for item in responses:
                 message += item + "\n-----\n"
-            await bot.send(os.environ["GROUP"], message)
+            await bot.send(os.environ["GROUP"], message, text_mode="styled")
         else:
             for item in responses:
-                await bot.send(os.environ["GROUP"], item)
+                await bot.send(os.environ["GROUP"], item, text_mode="styled")
 
 
 collector = Collector()
