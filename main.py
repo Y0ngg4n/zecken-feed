@@ -121,7 +121,7 @@ class Taz(Scraper):
             f.write(str(self.counter))
         csv_response = requests.get(self.url)
 
-        csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))
+        csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))[1:]
 
         # old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
         # diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
@@ -169,6 +169,7 @@ class Taz(Scraper):
 
         with open(file=cache_file, mode="w") as fw:
             for item in responses:
+                if item.starts
                 demo = Demo(
                     item[0],
                     item[1],
