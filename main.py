@@ -153,7 +153,7 @@ class Taz(Scraper):
                     item[4],
                     item[5],
                 )
-                if demo.getId() not in fw.read():
+                if str(demo.getId()) not in fw.read():
                     responses.append(
                         f"**{item[0]}**\n"
                         + f"*{item[2]} {item[3]}*\n"
