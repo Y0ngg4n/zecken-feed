@@ -136,62 +136,62 @@ class Taz(Scraper):
             f.write(csv_response.text)
         csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))
 
-            # old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
-            # diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
-            # print(diff)
-            bot = SignalBot(
-                {
-                    "signal_service": os.environ["SIGNAL_SERVICE"],
-                    "phone_number": os.environ["PHONE_NUMBER"],
-                }
-            )
-            # await bot.send(os.environ["GROUP"], "Test")
+        # old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
+        # diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
+        # print(diff)
+        bot = SignalBot(
+            {
+                "signal_service": os.environ["SIGNAL_SERVICE"],
+                "phone_number": os.environ["PHONE_NUMBER"],
+            }
+        )
+        # await bot.send(os.environ["GROUP"], "Test")
 
-            if not os.path.isfile(cache_file):
-                os.mknod(cache_file)
+        if not os.path.isfile(cache_file):
+            os.mknod(cache_file)
 
-            responses = []
-            with open(cache_file, mode="r") as fw:
-                for item in csv_response():
-                    demo = Demo(
-                        item[0],
-                        item[1],
-                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                        item[3],
-                        item[6],
-                        item[4],
-                        item[5],
-                    )
-                    if demo.getId() not in fw.read():
-                        diff.remove(item)
-                        responses.add(f"**{item[0]}**\n" + f"*{item[2]} {item[3]}*\n" + item[1] + "\n" + item[6])
-
-            if len(responses) > 2:
-                message = ""
-                for item in responses:
-                    message += (
-                        item
-                        + "\n-----\n"
-                    )
-                await bot.send(os.environ["GROUP"], message)
-            else:
-                for item in responses:
-                    await bot.send(
-                        os.environ["GROUP"], item
+        responses = []
+        with open(cache_file, mode="r") as fw:
+            for item in csv_response():
+                demo = Demo(
+                    item[0],
+                    item[1],
+                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                    item[3],
+                    item[6],
+                    item[4],
+                    item[5],
+                )
+                if demo.getId() not in fw.read():
+                    responses.add(
+                        f"**{item[0]}**\n"
+                        + f"*{item[2]} {item[3]}*\n"
+                        + item[1]
+                        + "\n"
+                        + item[6]
                     )
 
-            with open(file=cache_file, mode="w") as fw:
-                for item in diff:
-                    demo = Demo(
-                        item[0],
-                        item[1],
-                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                        item[3],
-                        item[6],
-                        item[4],
-                        item[5],
-                    )
-                    fw.write(demo.getId())
+        if len(responses) > 2:
+            message = ""
+            for item in responses:
+                message += item + "\n-----\n"
+            await bot.send(os.environ["GROUP"], message)
+        else:
+            for item in responses:
+                await bot.send(os.environ["GROUP"], item)
+
+        with open(file=cache_file, mode="w") as fw:
+            for item in responses:
+                demo = Demo(
+                    item[0],
+                    item[1],
+                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                    item[3],
+                    item[6],
+                    item[4],
+                    item[5],
+                )
+                fw.write(demo.getId())
 
         for i in range(1, len(csv_response)):
             Collector.demos.append(
