@@ -139,7 +139,7 @@ class Taz(Scraper):
 
         responses = []
         with open(cache_file, mode="r") as fw:
-            for item in csv_response():
+            for item in csv_response:
                 demo = Demo(
                     item[0],
                     item[1],
