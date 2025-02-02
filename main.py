@@ -140,10 +140,29 @@ class Taz(Scraper):
             os.mknod(cache_file)
 
         responses = []
-        with open(cache_file, mode="r") as fw:
-            for item in csv_response:
-                if "Datum" in item[0]:
-                    continue
+        for item in csv_response:
+            if "Datum" in item[0]:
+                continue
+            demo = Demo(
+                item[0],
+                item[1],
+                datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                item[3],
+                item[6],
+                item[4],
+                item[5],
+            )
+
+            fw = open(cache_file, mode="r")
+            if str(demo.getId()) not in fw.read():
+                print("ID: " + demo.getId() + "\n")
+                responses.append(
+                    f"**{item[0]}**\n"
+                    + f"*{item[2]} {item[3]}*\n"
+                    + item[1]
+                    + "\n"
+                    + item[6]
+                )
                 demo = Demo(
                     item[0],
                     item[1],
@@ -153,38 +172,20 @@ class Taz(Scraper):
                     item[4],
                     item[5],
                 )
-                if str(demo.getId()) not in fw.read():
-                    print("ID: " + demo.getId() + "\n")
-                    responses.append(
-                        f"**{item[0]}**\n"
-                        + f"*{item[2]} {item[3]}*\n"
-                        + item[1]
-                        + "\n"
-                        + item[6]
-                    )
-                    demo = Demo(
-                        item[0],
-                        item[1],
-                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                        item[3],
-                        item[6],
-                        item[4],
-                        item[5],
-                    )
-                    with open(cache_file, mode="a") as fww:
-                        fww.write(str(demo.getId()) + "\n")
+                with open(cache_file, mode="a") as fww:
+                    fww.write(str(demo.getId()) + "\n")
 
-                Collector.demos.append(
-                    Demo(
-                        item[0],
-                        [1],
-                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                        item[3],
-                        item[6],
-                        item[4],
-                        item[5],
-                    )
+            Collector.demos.append(
+                Demo(
+                    item[0],
+                    [1],
+                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                    item[3],
+                    item[6],
+                    item[4],
+                    item[5],
                 )
+            )
 
         if len(responses) > 2:
             message = ""
