@@ -15,7 +15,6 @@ import asyncio
 load_dotenv()
 
 counter_file = "./data/counter.txt"
-data_file = "./data/data.csv"
 cache_file = "./data/cache.txt"
 data_dir = "./data"
 
@@ -92,8 +91,6 @@ class Taz(Scraper):
 
     def updateCounter(self):
         global counter_file
-        global data_file
-        global old_data_file
 
         if os.path.isfile(counter_file):
             with open(counter_file, "r") as f:
@@ -109,7 +106,6 @@ class Taz(Scraper):
 
     async def get_data(self):
         global counter_file
-        global data_file
         self.updateCounter()
         csv_response = requests.get(self.url)
         while csv_response.status_code == 200:
@@ -125,15 +121,6 @@ class Taz(Scraper):
             f.write(str(self.counter))
         csv_response = requests.get(self.url)
 
-        if not os.path.isfile(data_file):
-            os.mknod(data_file)
-        else:
-            with open(data_file, mode="r") as fi:
-                with open(old_data_file, mode="w") as fw:
-                    fw.write(fi.read())
-
-        with open(data_file, "w") as f:
-            f.write(csv_response.text)
         csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))
 
         # old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
