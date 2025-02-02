@@ -151,6 +151,8 @@ class Taz(Scraper):
                 )
                 # await bot.send(os.environ["GROUP"], "Test")
 
+                if not os.path.isfile(cache_file):
+                    os.mknod(cache_file)
                 with open(cache_file, mode="r") as fw:
                     for item in diff.copy():
                         demo = Demo(
