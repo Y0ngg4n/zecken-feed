@@ -8,3 +8,4 @@ requests
 setuptools
 build
 wheel
+python-dotenv
