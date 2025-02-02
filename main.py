@@ -173,6 +173,18 @@ class Taz(Scraper):
                     with open(cache_file, mode="a") as fww:
                         fww.write(str(demo.getId()) + "\n")
 
+                Collector.demos.append(
+                    Demo(
+                        item[0],
+                        [1],
+                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                        item[3],
+                        item[6],
+                        item[4],
+                        item[5],
+                    )
+                )
+
         if len(responses) > 2:
             message = ""
             for item in responses:
@@ -181,21 +193,6 @@ class Taz(Scraper):
         else:
             for item in responses:
                 await bot.send(os.environ["GROUP"], item)
-
-        for i in range(1, len(csv_response)):
-            if "Datum" in item[0]:
-                continue
-            Collector.demos.append(
-                Demo(
-                    csv_response[i][0],
-                    csv_response[i][1],
-                    datetime.strptime(csv_response[i][2].strip(), "%d.%m.%Y"),
-                    csv_response[3],
-                    csv_response[i][6],
-                    csv_response[i][4],
-                    csv_response[i][5],
-                )
-            )
 
 
 collector = Collector()
