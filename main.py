@@ -152,15 +152,15 @@ class Taz(Scraper):
 
                 await bot.send(
                     os.environ["GROUP"],
-                    old_csv[0][0]
+                    old_csv[1][0]
                     + "\n"
-                    + old_csv[0][2]
+                    + old_csv[1][2]
                     + " "
-                    + old_csv[0][3]
+                    + old_csv[1][3]
                     + "\n"
-                    + old_csv[0][1]
+                    + old_csv[1][1]
                     + "\n"
-                    + old_csv[0][6],
+                    + old_csv[1][6],
                 )
                 for item in diff:
                     await bot.send(
