@@ -161,6 +161,16 @@ class Taz(Scraper):
                         + "\n"
                         + item[6]
                     )
+                    demo = Demo(
+                        item[0],
+                        item[1],
+                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                        item[3],
+                        item[6],
+                        item[4],
+                        item[5],
+                    )
+                    fw.write(demo.getId())
 
         if len(responses) > 2:
             message = ""
@@ -170,21 +180,6 @@ class Taz(Scraper):
         else:
             for item in responses:
                 await bot.send(os.environ["GROUP"], item)
-
-        with open(file=cache_file, mode="w") as fw:
-            for item in responses:
-                if "Datum" in item[0]:
-                    continue
-                demo = Demo(
-                    item[0],
-                    item[1],
-                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                    item[3],
-                    item[6],
-                    item[4],
-                    item[5],
-                )
-                fw.write(demo.getId())
 
         for i in range(1, len(csv_response)):
             if "Datum" in item[0]:
