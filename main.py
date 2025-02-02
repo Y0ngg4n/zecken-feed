@@ -170,7 +170,7 @@ class Taz(Scraper):
                         item[4],
                         item[5],
                     )
-                    with open(cache_file, mode="w") as fww:
+                    with open(cache_file, mode="a") as fww:
                         fww.write(str(demo.getId()))
 
         if len(responses) > 2:
