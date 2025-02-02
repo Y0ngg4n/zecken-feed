@@ -170,7 +170,7 @@ class Taz(Scraper):
                         item[4],
                         item[5],
                     )
-                    fw.write(demo.getId())
+                    fw.write(str(demo.getId()))
 
         if len(responses) > 2:
             message = ""
