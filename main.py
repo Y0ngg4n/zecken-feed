@@ -17,7 +17,6 @@ load_dotenv()
 counter_file = "./data/counter.txt"
 data_file = "./data/data.csv"
 cache_file = "./data/cache.txt"
-old_data_file = "./data/data-old.csv"
 data_dir = "./data"
 
 
@@ -111,7 +110,6 @@ class Taz(Scraper):
     async def get_data(self):
         global counter_file
         global data_file
-        global old_data_file
         self.updateCounter()
         csv_response = requests.get(self.url)
         while csv_response.status_code == 200:
@@ -138,70 +136,62 @@ class Taz(Scraper):
             f.write(csv_response.text)
         csv_response = list(csv.reader(csv_response.text.splitlines(), delimiter=","))
 
-        if os.path.isfile(old_data_file):
-            with open(file=old_data_file, mode="r") as old:
-                old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
-                diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
-                print(diff)
-                bot = SignalBot(
-                    {
-                        "signal_service": os.environ["SIGNAL_SERVICE"],
-                        "phone_number": os.environ["PHONE_NUMBER"],
-                    }
-                )
-                # await bot.send(os.environ["GROUP"], "Test")
+            # old_csv = list(csv.reader(old.read().splitlines(), delimiter=","))
+            # diff = list(set(map(tuple, csv_response)) - set(map(tuple, old_csv)))
+            # print(diff)
+            bot = SignalBot(
+                {
+                    "signal_service": os.environ["SIGNAL_SERVICE"],
+                    "phone_number": os.environ["PHONE_NUMBER"],
+                }
+            )
+            # await bot.send(os.environ["GROUP"], "Test")
 
-                if not os.path.isfile(cache_file):
-                    os.mknod(cache_file)
-                with open(cache_file, mode="r") as fw:
-                    for item in diff.copy():
-                        demo = Demo(
-                            item[0],
-                            item[1],
-                            datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                            item[3],
-                            item[6],
-                            item[4],
-                            item[5],
-                        )
-                        if demo.getId() in fw.read():
-                            diff.remove(item)
+            if not os.path.isfile(cache_file):
+                os.mknod(cache_file)
 
-                if len(diff) > 2:
-                    message = ""
-                    for item in diff:
-                        message += (
-                            f"**{item[0]}**\n"
-                            + f"*{item[2]} {item[3]}*\n"
-                            + item[1]
-                            + "\n"
-                            + item[6]
-                            + "\n-----\n"
-                        )
-                    await bot.send(os.environ["GROUP"], message)
-                else:
-                    for item in diff:
-                        await bot.send(
-                            os.environ["GROUP"],
-                            f"**{item[0]}**\n"
-                            + f"*{item[2]} {item[3]}*\n"
-                            + item[1]
-                            + "\n"
-                            + item[6],
-                        )
+            responses = []
+            with open(cache_file, mode="r") as fw:
+                for item in csv_response():
+                    demo = Demo(
+                        item[0],
+                        item[1],
+                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                        item[3],
+                        item[6],
+                        item[4],
+                        item[5],
+                    )
+                    if demo.getId() not in fw.read():
+                        diff.remove(item)
+                        responses.add(f"**{item[0]}**\n" + f"*{item[2]} {item[3]}*\n" + item[1] + "\n" + item[6])
 
-                with open(file=cache_file, mode="w") as fw:
-                    for item in diff:
-                        demo = Demo(
-                            item[0],
-                            item[1],
-                            datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                            item[3],
-                            item[6],
-                            item[4],
-                            item[5],
-                        )
-                        fw.write(demo.getId())
+            if len(responses) > 2:
+                message = ""
+                for item in responses:
+                    message += (
+                        item
+                        + "\n-----\n"
+                    )
+                await bot.send(os.environ["GROUP"], message)
+            else:
+                for item in responses:
+                    await bot.send(
+                        os.environ["GROUP"], item
+                    )
+
+            with open(file=cache_file, mode="w") as fw:
+                for item in diff:
+                    demo = Demo(
+                        item[0],
+                        item[1],
+                        datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                        item[3],
+                        item[6],
+                        item[4],
+                        item[5],
+                    )
+                    fw.write(demo.getId())
 
         for i in range(1, len(csv_response)):
             Collector.demos.append(
