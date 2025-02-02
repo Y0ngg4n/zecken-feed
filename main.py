@@ -171,7 +171,7 @@ class Taz(Scraper):
                         item[5],
                     )
                     with open(cache_file, mode="a") as fww:
-                        fww.write(str(demo.getId()))
+                        fww.write(str(demo.getId()) + "\n")
 
         if len(responses) > 2:
             message = ""
