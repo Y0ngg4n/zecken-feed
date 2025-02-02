@@ -16,6 +16,7 @@ load_dotenv()
 
 counter_file = "./data/counter.txt"
 data_file = "./data/data.csv"
+cache_file = "./data/cache.txt"
 old_data_file = "./data/data-old.csv"
 data_dir = "./data"
 
@@ -149,15 +150,56 @@ class Taz(Scraper):
                     }
                 )
                 # await bot.send(os.environ["GROUP"], "Test")
-                for item in diff:
-                    await bot.send(
-                        os.environ["GROUP"],
-                        f"**{item[0]}**\n"
-                        + f"*{item[2]} {item[3]}*\n"
-                        + item[1]
-                        + "\n"
-                        + item[6],
-                    )
+
+                with open(cache_file, mode="r") as fw:
+                    for item in diff.copy():
+                        demo = Demo(
+                            item[0],
+                            item[1],
+                            datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                            item[3],
+                            item[6],
+                            item[4],
+                            item[5],
+                        )
+                        if demo.getId() in fw.read():
+                            diff.remove(item)
+
+                if len(diff) > 2:
+                    message = ""
+                    for item in diff:
+                        message += (
+                            f"**{item[0]}**\n"
+                            + f"*{item[2]} {item[3]}*\n"
+                            + item[1]
+                            + "\n"
+                            + item[6]
+                            + "\n-----\n"
+                        )
+                    await bot.send(os.environ["GROUP"], message)
+                else:
+                    for item in diff:
+                        await bot.send(
+                            os.environ["GROUP"],
+                            f"**{item[0]}**\n"
+                            + f"*{item[2]} {item[3]}*\n"
+                            + item[1]
+                            + "\n"
+                            + item[6],
+                        )
+
+                with open(file=cache_file, mode="w") as fw:
+                    for item in diff:
+                        demo = Demo(
+                            item[0],
+                            item[1],
+                            datetime.strptime(item[2].strip(), "%d.%m.%Y"),
+                            item[3],
+                            item[6],
+                            item[4],
+                            item[5],
+                        )
+                        fw.write(demo.getId())
 
         for i in range(1, len(csv_response)):
             Collector.demos.append(
@@ -167,8 +209,8 @@ class Taz(Scraper):
                     datetime.strptime(csv_response[i][2].strip(), "%d.%m.%Y"),
                     csv_response[3],
                     csv_response[i][6],
-                    csv_response[i][3],
                     csv_response[i][4],
+                    csv_response[i][5],
                 )
             )
 
