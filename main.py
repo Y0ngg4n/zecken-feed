@@ -167,6 +167,7 @@ class Taz(Scraper):
                     (float(cities[2]), float(cities[3])),
                     (demo.latitude, demo.longitude),
                 ).km <= float(cities[1]):
+                    print("In distance")
                     filtered = True
 
             fw = open(cache_file, mode="r")
