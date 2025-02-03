@@ -169,13 +169,13 @@ class Taz(Scraper):
             logfile.write(str(cities) + "\n")
             for city in cities:
                 distance = geopy.distance.geodesic(
-                    (float(cities[2]), float(cities[3])),
+                    (float(city[2]), float(city[3])),
                     (demo.latitude, demo.longitude),
                 ).km
                 print(distance)
 
                 logfile.write(str(distance) + "\n")
-                if distance <= float(cities[1]):
+                if distance <= float(city[1]):
                     logfile.write(str("In distance") + "\n")
                     print("In distance")
                     filtered = True
