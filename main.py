@@ -173,6 +173,10 @@ class Taz(Scraper):
                     print("In distance")
                     filtered = True
 
+                with open("./data/log.txt", mode="a") as fww:
+                    fww.write(demo.place + "\n")
+                    fww.write(distance + "\n")
+
             fw = open(cache_file, mode="r")
             if filtered and str(demo.getId()) not in fw.read():
                 print("ID: " + demo.getId() + "\n")
