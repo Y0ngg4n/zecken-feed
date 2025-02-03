@@ -20,7 +20,7 @@ cache_file = "./data/cache.txt"
 data_dir = "./data"
 
 cities = os.getenv("CITIES")
-cities = map(lambda x: x.split(":"), cities.split("#"))
+cities = list(map(lambda x: x.split(":"), cities.split("#")))
 
 
 class Collector:
@@ -163,7 +163,7 @@ class Taz(Scraper):
                 logfile.write("Not in Time\n")
                 continue
             filtered = False
-            if demo.place in map(lambda x: x[0], cities):
+            if demo.place in list(map(lambda x: x[0], cities)):
                 filtered = True
 
             logfile.write(str(cities) + "\n")
