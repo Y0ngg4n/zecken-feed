@@ -181,7 +181,7 @@ class Taz(Scraper):
                     filtered = True
 
                     logfile.write(demo.place + "\n")
-                    logfile.write(distance + "\n")
+                    logfile.write(str(distance) + "\n")
 
             fw = open(cache_file, mode="r")
             if filtered and str(demo.getId()) not in fw.read():
