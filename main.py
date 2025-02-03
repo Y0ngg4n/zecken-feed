@@ -158,19 +158,19 @@ class Taz(Scraper):
             )
             if demo.date.date() < datetime.today().date():
                 continue
-            if demo.place not in map(lambda x: x[0], cities):
-                inRange = False
-                for city in cities:
-                    if geopy.distance.geodesic(
-                        (float(cities[2]), float(cities[3])),
-                        (demo.latitude, demo.longitude),
-                    ).km <= float(cities[1]):
-                        inRange = True
-                if not inRange:
-                    continue
+            filtered = False
+            if demo.place in map(lambda x: x[0], cities):
+                filtered = True
+
+            for city in cities:
+                if geopy.distance.geodesic(
+                    (float(cities[2]), float(cities[3])),
+                    (demo.latitude, demo.longitude),
+                ).km <= float(cities[1]):
+                    filtered = True
 
             fw = open(cache_file, mode="r")
-            if str(demo.getId()) not in fw.read():
+            if filtered and str(demo.getId()) not in fw.read():
                 print("ID: " + demo.getId() + "\n")
                 responses.append(
                     f"**{item[0]}**\n"
