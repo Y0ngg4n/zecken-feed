@@ -11,12 +11,16 @@ from fastapi import FastAPI, Response
 from dotenv import load_dotenv
 from signalbot import SignalBot
 import asyncio
+import geopy.distance
 
 load_dotenv()
 
 counter_file = "./data/counter.txt"
 cache_file = "./data/cache.txt"
 data_dir = "./data"
+
+cities = os.getenv("CITIES")
+cities = map(lambda x: x.split(":"), cities.split("#"))
 
 
 class Collector:
@@ -152,6 +156,18 @@ class Taz(Scraper):
                 item[4],
                 item[5],
             )
+            if demo.date < datetime.today().date():
+                continue
+            if demo.place not in map(lambda x: x[0], cities.map()):
+                inRange = False
+                for city in cities:
+                    if geopy.distance.geodesic(
+                        (float(cities[2]), float(cities[3])),
+                        (demo.latitude, demo.longitude),
+                    ).km <= float(cities[1]):
+                        inRange = True
+                if not inRange:
+                    continue
 
             fw = open(cache_file, mode="r")
             if str(demo.getId()) not in fw.read():
@@ -163,29 +179,10 @@ class Taz(Scraper):
                     + "\n"
                     + item[6]
                 )
-                demo = Demo(
-                    item[0],
-                    item[1],
-                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                    item[3],
-                    item[6],
-                    item[4],
-                    item[5],
-                )
                 with open(cache_file, mode="a") as fww:
                     fww.write(str(demo.getId()) + "\n")
 
-            Collector.demos.append(
-                Demo(
-                    item[0],
-                    [1],
-                    datetime.strptime(item[2].strip(), "%d.%m.%Y"),
-                    item[3],
-                    item[6],
-                    item[4],
-                    item[5],
-                )
-            )
+            Collector.demos.append(demo)
 
         if len(responses) > 2:
             message = ""
