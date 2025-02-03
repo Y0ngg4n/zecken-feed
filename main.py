@@ -164,10 +164,12 @@ class Taz(Scraper):
                 filtered = True
 
             for city in cities:
-                if geopy.distance.geodesic(
+                distance = geopy.distance.geodesic(
                     (float(cities[2]), float(cities[3])),
                     (demo.latitude, demo.longitude),
-                ).km <= float(cities[1]):
+                ).km
+                print(distance)
+                if distance <= float(cities[1]):
                     print("In distance")
                     filtered = True
 
