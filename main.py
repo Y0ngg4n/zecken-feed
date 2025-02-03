@@ -156,7 +156,7 @@ class Taz(Scraper):
                 item[4],
                 item[5],
             )
-            if demo.date < datetime.today().date():
+            if demo.date.date() < datetime.today().date():
                 continue
             if demo.place not in map(lambda x: x[0], cities.map()):
                 inRange = False
