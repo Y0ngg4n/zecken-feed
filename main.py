@@ -158,7 +158,7 @@ class Taz(Scraper):
             )
             if demo.date.date() < datetime.today().date():
                 continue
-            if demo.place not in map(lambda x: x[0], cities.map()):
+            if demo.place not in map(lambda x: x[0], cities):
                 inRange = False
                 for city in cities:
                     if geopy.distance.geodesic(
