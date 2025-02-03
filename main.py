@@ -157,6 +157,7 @@ class Taz(Scraper):
                 item[5],
             )
             if demo.date.date() < datetime.today().date():
+                print("Not in Time")
                 continue
             filtered = False
             if demo.place in map(lambda x: x[0], cities):
