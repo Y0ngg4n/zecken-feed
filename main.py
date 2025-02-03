@@ -157,31 +157,21 @@ class Taz(Scraper):
                 item[5],
             )
 
-            logfile = open("./data/log.txt", mode="a")
             if demo.date.date() < datetime.today().date():
                 print("Not in Time")
-                logfile.write("Not in Time\n")
                 continue
             filtered = False
             if demo.place in list(map(lambda x: x[0], cities)):
                 filtered = True
 
-            logfile.write(str(cities) + "\n")
             for city in cities:
                 distance = geopy.distance.geodesic(
                     (float(city[2]), float(city[3])),
                     (demo.latitude, demo.longitude),
                 ).km
-                print(distance)
 
-                logfile.write(str(distance) + "\n")
                 if distance <= float(city[1]):
-                    logfile.write(str("In distance") + "\n")
-                    print("In distance")
                     filtered = True
-
-                    logfile.write(demo.place + "\n")
-                    logfile.write(str(distance) + "\n")
 
             fw = open(cache_file, mode="r")
             if filtered and str(demo.getId()) not in fw.read():
