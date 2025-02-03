@@ -173,7 +173,10 @@ class Taz(Scraper):
                     (demo.latitude, demo.longitude),
                 ).km
                 print(distance)
+
+                logfile.write(str(distance) + "\n")
                 if distance <= float(cities[1]):
+                    logfile.write(str("In distance") + "\n")
                     print("In distance")
                     filtered = True
 
